@@ -1,3 +1,5 @@
+console.log("API KEY present?", process.env.OPENAI_API_KEY ? "Yes" : "No");
+console.log("Question:", req.body.question);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
