@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        Authorization: "Bearer YOUR_HF_API_KEY_HERE",
       },
       body: JSON.stringify({
         inputs: question,
