@@ -18,9 +18,9 @@ export default function Chatbot() {
       });
 
       const data = await res.json();
-      setResponse(data.answer || "Sorry, I couldn’t find an answer.");
+      setResponse(data.answer || "Sorry, I am still trying to find an Answer(Ak is on it).");
     } catch (error) {
-      setResponse("Error: " + error.message);
+      setResponse("Oops! Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
