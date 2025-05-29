@@ -3,48 +3,71 @@ import { useState } from "react";
 export default function Chatbot() {
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleAsk = async () => {
     if (!question) return;
+    setLoading(true);
+    setResponse("");
 
-    // Call your API route (which we'll create next!)
-    const res = await fetch("/api/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
-    });
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
 
-    const data = await res.json();
-    setResponse(data.answer);
+      const data = await res.json();
+      setResponse(data.answer || "Sorry, I couldn’t find an answer.");
+    } catch (error) {
+      setResponse("Error: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ marginTop: "20px", textAlign: "center" }}>
+    <div className="chatbox">
       <input
         type="text"
-        placeholder="Ask a question..."
+        placeholder="Type your question..."
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
-        style={{ width: "300px", padding: "8px" }}
+        onKeyDown={(e) => e.key === "Enter" && handleAsk()}
       />
-      <button
-        onClick={handleAsk}
-        style={{
-          marginLeft: "10px",
-          padding: "8px 12px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Ask
-      </button>
-
-      <div style={{ marginTop: "20px" }}>
-        {response && <p><strong>Response:</strong> {response}</p>}
+      <button onClick={handleAsk}>Ask</button>
+      <div className="response">
+        {loading ? "Loading..." : response}
       </div>
+      <style jsx>{`
+        .chatbox {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          margin-top: 30px;
+        }
+        input {
+          width: 300px;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        button {
+          background-color: #4caf50;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .response {
+          margin-top: 20px;
+          font-size: 1rem;
+          color: #333;
+          min-height: 1.2rem;
+        }
+      `}</style>
     </div>
   );
 }
